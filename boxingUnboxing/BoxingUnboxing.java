@@ -41,6 +41,7 @@ public class BoxingUnboxing {
         System.out.println(metoda4(468));
         System.out.println(metoda5(2.34252535E8));
         System.out.println(metoda6(1314564123L));
+
     }
 
 
