@@ -1,5 +1,7 @@
 package number.uloha;
 
+import com.sun.xml.internal.fastinfoset.util.CharArray;
+
 public class Main {
 
   public static void metoda1(Number vstup){
@@ -19,9 +21,11 @@ public class Main {
 
   public static void main(String[] args) {
 
+
     metoda1(10);
     metoda1(2.5);
     metoda1(15);
+
 
   }
 
