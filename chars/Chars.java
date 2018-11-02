@@ -23,6 +23,9 @@ public class Chars {
     System.out.println(Character.isWhitespace(charArray[2]));
     System.out.println(Character.toUpperCase(charArray[5]));
 
+    String s = "dnes budem studovat javu";
+
+    System.out.println(s.substring(9,12).length());
 
   }
 
