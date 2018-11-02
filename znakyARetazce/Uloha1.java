@@ -53,14 +53,39 @@ public class Uloha1 {
     String s = readFromKeyboard();
     System.out.println(s.substring(0,s.lastIndexOf(",")));
 
-
   }
+
+  public static void cutTextBetweenFirstAndSecondComma(){
+
+    String s = readFromKeyboard();
+
+    char textParse[] = s.toCharArray();
+    int j=0;
+    int indexOfSecondComma = 0;
+
+    for (int i=0; i < s.length(); i++ )
+    { if (textParse[i] == ','){j++;}
+      if (j==2) {indexOfSecondComma=i; break;}
+    }
+
+    if (j<2) { System.out.println("Nothing to cut"); }
+
+    else System.out.println(s.substring(s.indexOf(","),indexOfSecondComma));
+
+    System.out.println(indexOfSecondComma);
+
+    }
+
+
+
 
   public static void main(String[] args) {
 
     //transformToCapital();
     //transformToAt();
-    cutLastComma();
+    //cutLastComma();
+
+    cutTextBetweenFirstAndSecondComma();
 
   }
 
