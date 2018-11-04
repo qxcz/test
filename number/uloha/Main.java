@@ -1,6 +1,6 @@
 package number.uloha;
 
-import com.sun.xml.internal.fastinfoset.util.CharArray;
+// import com.sun.xml.internal.fastinfoset.util.CharArray;
 
 public class Main {
 

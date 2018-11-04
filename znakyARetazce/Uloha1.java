@@ -1,6 +1,6 @@
 package znakyARetazce;
 
-import com.sun.xml.internal.fastinfoset.util.CharArray;
+// import com.sun.xml.internal.fastinfoset.util.CharArray;
 
 import java.util.Scanner;
 
@@ -15,8 +15,8 @@ public class Uloha1 {
   }
 
 
-  public static void transformToCapital() {
-
+  public static void transformToCapital()
+  {
     String s = readFromKeyboard();
     char textParse[] = s.toCharArray();
 
@@ -34,8 +34,8 @@ public class Uloha1 {
 
   }
 
-  public static void transformToAt() {
-
+  public static void transformToAt()
+  {
     String s = readFromKeyboard();
     char textParse[] = s.toCharArray();
 
@@ -48,15 +48,15 @@ public class Uloha1 {
 
   }
 
-  public static void cutLastComma(){
-
+  public static void cutLastComma()
+  {
     String s = readFromKeyboard();
     System.out.println(s.substring(0,s.lastIndexOf(",")));
-
   }
 
-  public static void cutTextBetweenFirstAndSecondComma(){
 
+  public static void cutTextBetweenFirstAndSecondComma()
+  {
     String s = readFromKeyboard();
 
     char textParse[] = s.toCharArray();
@@ -67,14 +67,11 @@ public class Uloha1 {
     { if (textParse[i] == ','){j++;}
       if (j==2) {indexOfSecondComma=i; break;}
     }
-
     if (j<2) { System.out.println("Nothing to cut"); }
+    else
+      System.out.println(s.substring(0,s.indexOf(",")) + s.substring(indexOfSecondComma+1,s.length()));
 
-    else System.out.println(s.substring(s.indexOf(","),indexOfSecondComma));
-
-    System.out.println(indexOfSecondComma);
-
-    }
+  }
 
 
 
