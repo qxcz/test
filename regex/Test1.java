@@ -46,7 +46,7 @@ public class Test1 {
       checkPassword();
     }
     if (!searchText(".*[0-9].*",pass)){
-      System.out.println("nema velke cislo");
+      System.out.println("nema cislo");
       checkPassword();
     }
 
