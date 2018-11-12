@@ -23,6 +23,8 @@ public class Test1 {
 //    }
   }
 
+
+
   public static void checkMail(){
 
     String mail= new ReadFromKeyboard().readFromKeyboard();
