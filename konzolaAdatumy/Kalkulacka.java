@@ -1,5 +1,6 @@
 package konzolaAdatumy;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,21 +16,23 @@ public class Kalkulacka {
     public void pocitaj(){
 
 
-        ArrayList<Integer> listcisel = new ArrayList<>();
+        ArrayList<Double> listcisel = new ArrayList<>();
         ArrayList<String> listOperators = new ArrayList<>();
-        int suma = 0;
+        double suma = 0;
 
-        Pattern cislo = Pattern.compile("\\d+");
+        Pattern cislo = Pattern.compile("\\d+\\.\\d+");
         Pattern operator = Pattern.compile("[\\+\\-\\*/]+");
         Matcher m = cislo.matcher(someText);
         Matcher n = operator.matcher(someText);
         boolean found = false;
 
         while (m.find()) {
-            listcisel.add(Integer.parseInt(m.group()));
+           // System.out.println("cislo: " +m.group());
+            listcisel.add(Double.parseDouble(m.group()));
             found = true;
         }
         while (n.find()) {
+           // System.out.println("znak: " +n.group());
             listOperators.add(n.group());
             found = true;
         }
@@ -51,7 +54,8 @@ public class Kalkulacka {
             listcisel.add(i+1,suma);
 
         }
-        System.out.println(suma);
+        DecimalFormat format = new DecimalFormat("0.###");
+        System.out.print("\r = " + format.format(suma));
 
     }
 
