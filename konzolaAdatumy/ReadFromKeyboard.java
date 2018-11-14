@@ -49,11 +49,11 @@ public class ReadFromKeyboard
 
         for (int i=0;i<pocetzobrazeni;i++){
 
-            System.out.println("Rok " + (aktualnyRok+i) + ": " + Dni. LocalDate.of(aktualnyRok+i,mesiacNarodenia,denNarodenia).getDayOfWeek().getValue());
+            System.out.println("Rok " + (rokNarodenia+i) + ": " + Preklad.preklad(LocalDate.of(rokNarodenia+i,mesiacNarodenia,denNarodenia).getDayOfWeek().toString()));
 
         }
 
-
+       // System.out.println(Dni.valueOf("MONDAY"));
 
 
 

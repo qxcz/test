@@ -20,19 +20,19 @@ public class Kalkulacka {
         ArrayList<String> listOperators = new ArrayList<>();
         double suma = 0;
 
-        Pattern cislo = Pattern.compile("\\d+\\.\\d+");
+        Pattern cislo = Pattern.compile("\\d+\\.?\\d*");
         Pattern operator = Pattern.compile("[\\+\\-\\*/]+");
         Matcher m = cislo.matcher(someText);
         Matcher n = operator.matcher(someText);
         boolean found = false;
 
         while (m.find()) {
-           // System.out.println("cislo: " +m.group());
+            System.out.println("cislo: " +m.group());
             listcisel.add(Double.parseDouble(m.group()));
             found = true;
         }
         while (n.find()) {
-           // System.out.println("znak: " +n.group());
+            System.out.println("znak: " +n.group());
             listOperators.add(n.group());
             found = true;
         }
@@ -54,8 +54,9 @@ public class Kalkulacka {
             listcisel.add(i+1,suma);
 
         }
-        DecimalFormat format = new DecimalFormat("0.###");
+       DecimalFormat format = new DecimalFormat("0.###");
         System.out.print("\r = " + format.format(suma));
+
 
     }
 
