@@ -12,6 +12,7 @@ public class Sviatky {
     String pracovnyDen = "Pracovny den.";
     StringBuilder builder = new StringBuilder();
     StringBuilder builder1 = new StringBuilder();
+    String typDna;
     int j;
     int indexOfNextSviatok;
 
@@ -74,7 +75,17 @@ public class Sviatky {
         j++;
         builder.setLength(0);
       }
-      builder1.append("pracovy den, ale najblizsi sviatok bude ").append(sviatky[indexOfNextSviatok][1]);
+
+      String vikend = LocalDate.now().getDayOfWeek().toString();
+      switch(vikend){
+        case "SATURDAY"   : typDna =  "Sobota"; break;
+        case "SUNDAY"     : typDna =  "Nedela"; break;
+        default           : typDna =  "pracovy den"; break;
+      }
+
+
+      builder1.append(typDna);
+      builder1.append(", najblizsi sviatok bude ").append(sviatky[indexOfNextSviatok][1]);
       builder1.append(" o ").append(j).append(" dni");
       builder1.append(" ").append(LocalDate.now().plusDays(j));
       aktualnySviatok = builder1.toString();

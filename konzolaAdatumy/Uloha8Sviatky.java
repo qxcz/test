@@ -9,6 +9,7 @@ public class Uloha8Sviatky {
     StringBuilder builder = new StringBuilder();
     builder.append(LocalDate.now().getMonth().getValue()).append("-").append(LocalDate.now().getDayOfMonth());
 
+
   System.out.println("Dnes je " + Sviatky.sviatkyArray(builder.toString()));
 
 
