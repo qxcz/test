@@ -8,9 +8,9 @@ public class ScannerExample {
 
   public static void main(String[] args) throws FileNotFoundException {
 
-    FileInputStream fileInputStream = new FileInputStream("resources/text.txt");
+    FileInputStream fileInputStream = new FileInputStream("e:\\PROJECTS\\Learn2Code\\Java pre pokročilých\\RARBG.txt");
     Scanner scanner = new Scanner(fileInputStream);
-    scanner.useDelimiter(";");
+    scanner.useDelimiter("\\b");
     while (scanner.hasNext()){
       System.out.print("Novy token: ");
       System.out.print(scanner.next()+ "\n");
