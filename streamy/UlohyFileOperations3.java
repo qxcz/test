@@ -13,7 +13,7 @@ import java.util.Scanner;
  * ytvorí nový súbor s týmto názvom
  */
 
-public class Uloha7 {
+public class UlohyFileOperations3 {
 
     static ReadFilePath pat = new ReadFilePath();
 

@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  vypíše veľkosť súboru na konzolu.
 */
 
-public class Uloha3 {
+public class UlohyTextSearchTextAppendTextPrint {
 
     public static void main(String[] args) throws IOException {
 
