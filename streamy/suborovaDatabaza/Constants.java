@@ -5,25 +5,30 @@ import java.nio.file.Paths;
 
 public class Constants {
 
-    public Path getDefaultParentPath() {
-        return defaultParentPath;
-    }
+  public Path getDefaultParentPath() {
+    return defaultParentPath;
+  }
 
-    public String getDefaultDBname() {
-        return defaultDBname;
-    }
+  public String getDefaultDBname() {
+    return defaultDBname;
+  }
 
-    public Path getDefaultDBpath() {
-        return defaultDBpath;
-    }
+  public Path getDefaultDBpath() {
+    return defaultDBpath;
+  }
 
-    public Path getDefaultConfig() {
-        return defaultConfig;
-    }
+  public Path getDefaultConfig() {
+    return defaultConfig;
+  }
 
-    private final Path defaultParentPath = Paths.get("e:\\PROJECTS\\Learn2Code\\test\\");
-    private final String defaultDBname = "default.dbf";
-    private final Path defaultDBpath = Paths.get("e:\\PROJECTS\\Learn2Code\\test\\default.dbf");
-    private final Path defaultConfig = Paths.get("e:\\PROJECTS\\Learn2Code\\test\\config.cfg");
+  public String getHeader() {
+    return header;
+  }
+
+  private final Path defaultParentPath = Paths.get("c:\\DEV\\Test\\");
+  private final String defaultDBname = "default.dbf";
+  private final Path defaultDBpath = Paths.get("c:\\DEV\\Test\\default.dbf");
+  private final Path defaultConfig = Paths.get("c:\\DEV\\Test\\config.cfg");
+  private final String header = "priezvisko;meno;telefon1;telefon2;email";
 
 }

@@ -2,15 +2,17 @@ package streamy.suborovaDatabaza;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Menu {
 
-    public void showMenu(Path p) throws IOException {
+    public void showMenu(ArrayList<String> database) throws IOException {
 
         DB newDB = new DB();
+        String currentDB = new Property().getProperty("name");
 
-        System.out.println("\nCurrent DB: " + p.getFileName().toString() + " (" + new Property().getProperty("recordCount") + " records)");
+        System.out.println("\nCurrent DB: " + currentDB + " (" + new Property().getProperty("recordCount") + " records)");
         System.out.println("1 - Create new DB.");
         System.out.println("2 - Load new DB.");
         System.out.println("3 - Add record.");
@@ -25,29 +27,30 @@ public class Menu {
 
         switch (k) {
             case "1":
-                showMenu(newDB.createDB());
+                showMenu(newDB.loadDirect(newDB.createDB()));
                 break;
             case "2":
                 showMenu(newDB.loadDB());
                 break;
             case "3":
-                newDB.addRecord(p);
+                showMenu(newDB.addRecord(database));
                 break;
             case "4":
                 break;
             case "5":
                 break;
             case "6":
-                newDB.listDB(p);
-                showMenu(p);
+                showMenu(newDB.listDB(database));
+                //showMenu(database);
                 break;
             case "d":
                 break;
             case "q":
+                newDB.saveDB(database);
                 System.exit(0);
             default:
                 System.out.println("\nUnsupported option:");
-                showMenu(p);
+               // showMenu(database);
         }
 
     }

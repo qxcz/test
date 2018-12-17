@@ -43,11 +43,13 @@ public class DB {
 
     }
 
-    public Path loadDB() throws IOException {
+    public ArrayList<String> loadDB() throws IOException {
 
         Path defaultParentPath = new Constants().getDefaultParentPath();
         defaultParentPath = (!Files.isDirectory(defaultParentPath)) ? defaultParentPath.getParent() : defaultParentPath;
         Pattern p = Pattern.compile(".+\\.(dbf)$"); //regexp pre .dbf
+        String record;
+        BufferedReader reader = null;
 
         System.out.println("\nExisting DB files: ");
 
@@ -76,17 +78,55 @@ public class DB {
 
             checkDBFile(newDBPath);
 
-            BufferedReader reader = new BufferedReader((new FileReader(newDBPath.toString())));
-            int lines = 0;
-            while (reader.readLine() != null) lines++;
-            reader.close();
-            Integer recordCount = lines - 3;
+            ArrayList<String> database = new ArrayList<String>();
 
-            new Property().setProperty(k, recordCount.toString());
+          try {
+              reader = new BufferedReader((new FileReader(newDBPath.toString())));
+              int lines = 0;
+              while ((record = reader.readLine()) != null) {
+                  lines++;
+                  if (lines > 3) {
+                      database.add(record);
+                  }
+              }
+              Integer recordCount = lines - 3;
+              new Property().setProperty(k, recordCount.toString());
 
-            return newDBPath;
+          }finally {
+              if (reader != null) {
+                  reader.close();
+              }
+          }
+
+            return database;
         }
         return null;
+    }
+
+
+
+    public ArrayList<String> loadDirect (Path p) throws IOException{
+
+        ArrayList<String> database = new ArrayList<String>();
+        BufferedReader reader = null;
+        String record;
+
+        try {
+            reader = new BufferedReader((new FileReader(p.toString())));
+            int lines = 0;
+            while ((record = reader.readLine()) != null) {
+                lines++;
+                if (lines > 3) {
+                    database.add(record);
+                }
+            }
+        }finally {
+            if (reader != null) {
+                reader.close();
+            }
+        }
+
+        return database;
     }
 
 
@@ -106,7 +146,7 @@ public class DB {
                 builder.append(defaultPath.toString()).append("\\").append(openDB);
                 Path activeDBpath = Paths.get(builder.toString());
                 checkDBFile(activeDBpath);
-                menu.showMenu(activeDBpath);
+                menu.showMenu(loadDirect(activeDBpath));
             } else menu(menu);
 
         } else {
@@ -123,7 +163,7 @@ public class DB {
 
         switch (k) {
             case "1":
-                menu.showMenu(createDB());
+                menu.showMenu(loadDirect(createDB()));
                 break;
             case "2":
                 menu.showMenu(loadDB());
@@ -156,7 +196,7 @@ public class DB {
         }
     }
 
-    public void addRecord(Path p) throws IOException {
+    public ArrayList<String> addRecord(ArrayList<String> database) throws IOException {
 
         Osoba osoba = new Osoba();
         Menu menu = new Menu();
@@ -182,48 +222,50 @@ public class DB {
                 .append(osoba.getTelefon2()).append(";")
                 .append(osoba.getEmail());
 
-        try {
-            BufferedWriter out = new BufferedWriter(new FileWriter(p.toString(), true));
-            out.write(builder.toString());
-            out.newLine();
-            out.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        database.add(builder.toString());
+
         Integer newRecordcount = Integer.parseInt(property.getProperty("recordCount")) + 1;
 
         property.setProperty(property.getProperty("name"), newRecordcount.toString());
-        menu.showMenu(p);
+        return database;
 
     }
 
-    public void listDB(Path p) throws IOException {
+    public ArrayList<String> listDB(ArrayList<String> database) {
 
-        String s;
-        BufferedReader in = null;
-        Pattern r = Pattern.compile(";");
+        for (int i=0;i<database.size();i++){
+            String record = database.get(i);
+            String[] splitLine = record.split(";");
+            System.out.println(i+1 +
+              ".  " + splitLine[0]
+              + ", " + splitLine[1]
+              + ", " + splitLine[2]
+              + ", " + splitLine[3]
+              + ", " + splitLine[4]);
 
-        try {
-            in = new BufferedReader(new FileReader(p.toString()));
-            int counter = 0;
-            while ((s = in.readLine()) != null) {
-                counter++;
-                if (counter > 3) {
-                    String[] splitLine = s.split(";");
-                    System.out.println(counter - 3 +
-                            ".  " + splitLine[0]
-                            + ", " + splitLine[1]
-                            + ", " + splitLine[2]
-                            + ", " + splitLine[3]
-                            + ", " + splitLine[4]);
-                }
-            }
-
-        } finally {
-            if (in != null) {
-                in.close();
-            }
         }
+        return database;
+    }
+
+    public void saveDB (ArrayList<String> database) throws IOException{
+
+        Property property = new Property();
+        Constants constants = new Constants();
+
+        String name = property.getProperty("name");
+        String recordCount = property.getProperty("recordCount");
+        String dbPath = constants.getDefaultParentPath().toString();
+        String header = constants.getHeader();
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(dbPath).append("\\").append(name);
+        Path p = Paths.get(builder.toString());
+        Files.deleteIfExists(p);
+        database.add(0,name);
+        database.add(1,recordCount);
+        database.add(2,header);
+        Files.write(p,database,Charset.forName("UTF-8"), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+
     }
 }
 //
