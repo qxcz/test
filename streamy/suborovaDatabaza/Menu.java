@@ -30,18 +30,19 @@ public class Menu {
                 showMenu(newDB.loadDirect(newDB.createDB()));
                 break;
             case "2":
+                newDB.saveDB(database);
                 showMenu(newDB.loadDB());
                 break;
             case "3":
                 showMenu(newDB.addRecord(database));
                 break;
             case "4":
+                showMenu(newDB.deleteRecord(database));
                 break;
             case "5":
                 break;
             case "6":
                 showMenu(newDB.listDB(database));
-                //showMenu(database);
                 break;
             case "d":
                 break;
@@ -50,7 +51,8 @@ public class Menu {
                 System.exit(0);
             default:
                 System.out.println("\nUnsupported option:");
-               // showMenu(database);
+                showMenu(database);
+                break;
         }
 
     }

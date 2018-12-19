@@ -112,7 +112,7 @@ public class DB {
         String record;
 
         try {
-            reader = new BufferedReader((new FileReader(p.toString())));
+            reader = new BufferedReader(new FileReader(p.toString()));
             int lines = 0;
             while ((record = reader.readLine()) != null) {
                 lines++;
@@ -183,6 +183,7 @@ public class DB {
 
             BufferedReader reader = new BufferedReader(new FileReader(p.toString()));
             String firsLine = reader.readLine();
+            reader.close();
             if (!firsLine.equals(dbName)) {
                 System.out.println("\nIncorrect DB file format! Create new DB, or load another file.");
 
@@ -203,15 +204,15 @@ public class DB {
         Property property = new Property();
 
         Scanner vstup = new Scanner(System.in);
-        System.out.println("\nPriezvisko: ");
+        System.out.print("\nPriezvisko: ");
         osoba.setPriezvisko(vstup.nextLine());
-        System.out.println("Meno: ");
+        System.out.print("Meno: ");
         osoba.setMeno(vstup.nextLine());
-        System.out.println("Telefon 1: ");
+        System.out.print("Telefon 1: ");
         osoba.setTelefon1(vstup.nextLine());
-        System.out.println("Telefon 2: ");
+        System.out.print("Telefon 2: ");
         osoba.setTelefon2(vstup.nextLine());
-        System.out.println("email: ");
+        System.out.print("email: ");
         osoba.setEmail(vstup.nextLine());
 
         StringBuilder builder = new StringBuilder();
@@ -267,14 +268,22 @@ public class DB {
         Files.write(p,database,Charset.forName("UTF-8"), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
 
     }
+
+    public ArrayList<String> deleteRecord(ArrayList<String> database){
+
+        Property property = new Property();
+        Scanner vstup = new Scanner(System.in);
+        System.out.println("Select record to delete: ");
+        int recordToDelete = vstup.nextInt();
+        database.remove(recordToDelete-1);
+        Integer newRecordCount = Integer.parseInt(property.getProperty("recordCount")) -1;
+        property.setProperty(property.getProperty("name"),newRecordCount.toString());
+        return database;
+
+    }
 }
 //
-//
-//    public void delRecord() {
-//
-//    }
-//
-//
+
 //    public void searchDB() {
 //
 //    }
