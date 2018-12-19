@@ -10,9 +10,10 @@ public class Menu {
     public void showMenu(ArrayList<String> database) throws IOException {
 
         DB newDB = new DB();
-        String currentDB = new Property().getProperty("name");
+        Property myproperty = new Property();
+        String currentDB = myproperty.getProp("name");
 
-        System.out.println("\nCurrent DB: " + currentDB + " (" + new Property().getProperty("recordCount") + " records)");
+        System.out.println("\nCurrent DB: " + currentDB + " (" + myproperty.getProp("recordCount") + " records)");
         System.out.println("1 - Create new DB.");
         System.out.println("2 - Load new DB.");
         System.out.println("3 - Add record.");

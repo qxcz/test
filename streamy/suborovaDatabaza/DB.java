@@ -15,37 +15,69 @@ import java.util.regex.Pattern;
 
 public class DB {
 
+    Property myProperty = new Property();
+    Constants myConstanst = new Constants();
+
 
     public Path createDB() throws IOException {
 
-        Path defaultParentPath = new Constants().getDefaultParentPath();
+        Path defaultParentPath = myConstanst.getDefaultParentPath();
+        Scanner vstup = new Scanner(System.in);
+
+        System.out.println("\nCreating new DB!");
+        System.out.println("Default path: " + defaultParentPath + " Enter - OK; c - Change path");
+        String k = vstup.nextLine();
+        switch (k) {
+
+            case "c"    :
+                defaultParentPath=setPath();
+                break;
+            case ""     :
+                break;
+            default     :
+                System.out.println("Unknown option!");
+                createDB();
+        }
 
         String defaultExtension = ".dbf";
         StringBuilder builder = new StringBuilder();
         StringBuilder builder1 = new StringBuilder();
 
-        System.out.println("\nCreating new DB!");
-        System.out.println("Enter name:");
+        while(true){
+            System.out.println("Enter new DB name:");
+            k = vstup.nextLine();
+            builder.append(defaultParentPath.toString()).append("\\").append(k).append(defaultExtension);
+            Path dbPath = Paths.get(builder.toString().trim());
+            if (Files.isRegularFile(dbPath)) {
+                System.out.println("File already exists!");
+            }else {
+                String dbName = (builder1.append(k).append(defaultExtension)).toString();
+                List<String> lines = Arrays.asList(dbName, "0", "priezvisko;meno;telefon1;telefon2;email");
+                Files.write(dbPath, lines, Charset.forName("UTF-8"), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+                myProperty.createPropertyFile(dbPath);
+                System.out.println(dbPath);
+                return dbPath;
+            }
+        }
+
+    }
+
+
+    public Path setPath(){
+        System.out.println("Set valid path: ");
         Scanner vstup = new Scanner(System.in);
-        String k = vstup.nextLine();
-
-        builder.append(defaultParentPath.toString()).append("\\").append(k).append(defaultExtension);
-        Path dbPath = Paths.get(builder.toString().trim());
-        String dbName = (builder1.append(k).append(defaultExtension)).toString();
-
-        List<String> lines = Arrays.asList(dbName, "0", "priezvisko;meno;telefon1;telefon2;email");
-        Files.write(dbPath, lines, Charset.forName("UTF-8"), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-
-        new Property().createPropertyFile(k);
-
-        System.out.println(dbPath);
-        return dbPath;
-
+        Path newPath = Paths.get(vstup.nextLine());
+        if (Files.isDirectory(newPath)){return newPath;}
+        else {
+            System.out.println("Invalid path!");
+            setPath();
+        }
+        return null;
     }
 
     public ArrayList<String> loadDB() throws IOException {
 
-        Path defaultParentPath = new Constants().getDefaultParentPath();
+        Path defaultParentPath = myConstanst.getDefaultParentPath();
         defaultParentPath = (!Files.isDirectory(defaultParentPath)) ? defaultParentPath.getParent() : defaultParentPath;
         Pattern p = Pattern.compile(".+\\.(dbf)$"); //regexp pre .dbf
         String record;
@@ -80,23 +112,23 @@ public class DB {
 
             ArrayList<String> database = new ArrayList<String>();
 
-          try {
-              reader = new BufferedReader((new FileReader(newDBPath.toString())));
-              int lines = 0;
-              while ((record = reader.readLine()) != null) {
-                  lines++;
-                  if (lines > 3) {
-                      database.add(record);
-                  }
-              }
-              Integer recordCount = lines - 3;
-              new Property().setProperty(k, recordCount.toString());
+            try {
+                reader = new BufferedReader((new FileReader(newDBPath.toString())));
+                int lines = 0;
+                while ((record = reader.readLine()) != null) {
+                    lines++;
+                    if (lines > 3) {
+                        database.add(record);
+                    }
+                }
+                Integer recordCount = lines - 3;
+                myProperty.setCount(recordCount);
 
-          }finally {
-              if (reader != null) {
-                  reader.close();
-              }
-          }
+            } finally {
+                if (reader != null) {
+                    reader.close();
+                }
+            }
 
             return database;
         }
@@ -104,8 +136,7 @@ public class DB {
     }
 
 
-
-    public ArrayList<String> loadDirect (Path p) throws IOException{
+    public ArrayList<String> loadDirect(Path p) throws IOException {
 
         ArrayList<String> database = new ArrayList<String>();
         BufferedReader reader = null;
@@ -120,7 +151,7 @@ public class DB {
                     database.add(record);
                 }
             }
-        }finally {
+        } finally {
             if (reader != null) {
                 reader.close();
             }
@@ -132,19 +163,21 @@ public class DB {
 
     public void checkDBCfg() throws IOException {
 
-        Path defaultDBConfig = new Constants().getDefaultConfig();
-        File config = new File(defaultDBConfig.toString());
+        File config = new File(myConstanst.getDefaultConfig().toString());
         Menu menu = new Menu();
 
         if (config.exists()) {
-            String openDB = new Property().getProperty("name");
+            String openDB = myProperty.getProp("name");
+            String path = myProperty.getProp("path");
+            StringBuilder builder1 = new StringBuilder();
+            builder1.append(path).append("\\").append(openDB);
 
-            if (!openDB.equals("")) {
+            if (!openDB.equals("")){
 
-                Path defaultPath = new Constants().getDefaultParentPath();
-                StringBuilder builder = new StringBuilder();
-                builder.append(defaultPath.toString()).append("\\").append(openDB);
-                Path activeDBpath = Paths.get(builder.toString());
+                System.out.println(path);
+                Path activeDBpath = Paths.get(builder1.toString());
+                System.out.println(activeDBpath);
+
                 checkDBFile(activeDBpath);
                 menu.showMenu(loadDirect(activeDBpath));
             } else menu(menu);
@@ -178,7 +211,6 @@ public class DB {
 
         String dbName = p.getFileName().toString();
         File newDBfile = new File(p.toString());
-        Property property = new Property();
         if (newDBfile.exists() && newDBfile.isFile()) {
 
             BufferedReader reader = new BufferedReader(new FileReader(p.toString()));
@@ -186,13 +218,18 @@ public class DB {
             reader.close();
             if (!firsLine.equals(dbName)) {
                 System.out.println("\nIncorrect DB file format! Create new DB, or load another file.");
-
-                property.setProperty("", "");
+                myProperty.setDbName("");
+                myProperty.setDbRecordCount(0);
+                myProperty.setDbPath("");
+                myProperty.saveProperty();
                 checkDBCfg();
             }
         } else {
             System.out.println("\nFile does not exist! Create new DB, or load another file.");
-            property.setProperty("", "");
+            myProperty.setDbName("");
+            myProperty.setDbRecordCount(0);
+            myProperty.setDbPath("");
+            myProperty.saveProperty();
             checkDBCfg();
         }
     }
@@ -201,7 +238,6 @@ public class DB {
 
         Osoba osoba = new Osoba();
         Menu menu = new Menu();
-        Property property = new Property();
 
         Scanner vstup = new Scanner(System.in);
         System.out.print("\nPriezvisko: ");
@@ -225,59 +261,56 @@ public class DB {
 
         database.add(builder.toString());
 
-        Integer newRecordcount = Integer.parseInt(property.getProperty("recordCount")) + 1;
+        Integer newRecordcount = Integer.parseInt(myProperty.getProp("recordCount")) + 1;
 
-        property.setProperty(property.getProperty("name"), newRecordcount.toString());
+        myProperty.setCount(newRecordcount);
         return database;
 
     }
 
     public ArrayList<String> listDB(ArrayList<String> database) {
 
-        for (int i=0;i<database.size();i++){
+        for (int i = 0; i < database.size(); i++) {
             String record = database.get(i);
             String[] splitLine = record.split(";");
-            System.out.println(i+1 +
-              ".  " + splitLine[0]
-              + ", " + splitLine[1]
-              + ", " + splitLine[2]
-              + ", " + splitLine[3]
-              + ", " + splitLine[4]);
+            System.out.println(i + 1 +
+                    ".  " + splitLine[0]
+                    + ", " + splitLine[1]
+                    + ", " + splitLine[2]
+                    + ", " + splitLine[3]
+                    + ", " + splitLine[4]);
 
         }
         return database;
     }
 
-    public void saveDB (ArrayList<String> database) throws IOException{
+    public void saveDB(ArrayList<String> database) throws IOException {
 
-        Property property = new Property();
-        Constants constants = new Constants();
 
-        String name = property.getProperty("name");
-        String recordCount = property.getProperty("recordCount");
-        String dbPath = constants.getDefaultParentPath().toString();
-        String header = constants.getHeader();
+        String name = myProperty.getProp("name");
+        String recordCount = myProperty.getProp("recordCount");
+        String dbPath = myConstanst.getDefaultParentPath().toString();
+        String header = myConstanst.getHeader();
         StringBuilder builder = new StringBuilder();
 
         builder.append(dbPath).append("\\").append(name);
         Path p = Paths.get(builder.toString());
         Files.deleteIfExists(p);
-        database.add(0,name);
-        database.add(1,recordCount);
-        database.add(2,header);
-        Files.write(p,database,Charset.forName("UTF-8"), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+        database.add(0, name);
+        database.add(1, recordCount);
+        database.add(2, header);
+        Files.write(p, database, Charset.forName("UTF-8"), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
 
     }
 
-    public ArrayList<String> deleteRecord(ArrayList<String> database){
+    public ArrayList<String> deleteRecord(ArrayList<String> database) {
 
-        Property property = new Property();
         Scanner vstup = new Scanner(System.in);
         System.out.println("Select record to delete: ");
         int recordToDelete = vstup.nextInt();
-        database.remove(recordToDelete-1);
-        Integer newRecordCount = Integer.parseInt(property.getProperty("recordCount")) -1;
-        property.setProperty(property.getProperty("name"),newRecordCount.toString());
+        database.remove(recordToDelete - 1);
+        Integer newRecordCount = Integer.parseInt(myProperty.getProp("recordCount")) - 1;
+        myProperty.setCount(newRecordCount);
         return database;
 
     }
