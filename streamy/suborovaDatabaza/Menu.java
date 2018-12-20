@@ -33,6 +33,7 @@ public class Menu {
         showMenu(newDB.deleteRecord(database));
         break;
       case "search":
+        showMenu(newDB.searchDB(database));
         break;
       case "list":
         showMenu(newDB.listDB(database));
@@ -43,7 +44,7 @@ public class Menu {
         newDB.saveDB(database);
         System.exit(0);
       default:
-        System.out.println("Unknown command! Following commands are yet adapted:");
+        System.out.println("Unknown command! Following commands adapted (so far):");
         System.out.println("create - create new DB | load - load existing DB | deldb - delete existing DB | list - list all records | add - add new record | delrecord - delete record | search - search DB | q - quit");
         showMenu(database);
         break;

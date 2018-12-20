@@ -13,9 +13,9 @@ public class Uloha3 {
 
     public static void uloha3 (){
 
-        String obrazok = new ReadFromKeyboard().readFromKeyboard();
+        String obrazok = "Soltis;Marek;0903614242;;marek.soltis@gmail.com";
 
-        Pattern p = Pattern.compile(".+\\.(jpg|bmp|png|jpeg)$"); //obrazky
+        Pattern p = Pattern.compile(".+marek.+"); //obrazky
         Matcher m = p.matcher(obrazok);
 
         System.out.println(m.matches());

@@ -319,7 +319,7 @@ public class DB {
     database.add(1, recordCount);
     database.add(2, header);
     Files.write(p, database, Charset.forName("UTF-8"), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-    System.out.println("Saving: " + p);
+    System.out.println("Saving! " + p);
 
   }
 
@@ -333,6 +333,34 @@ public class DB {
     myProperty.setCount(newRecordCount);
     return database;
 
+  }
+
+  public ArrayList<String> searchDB (ArrayList<String> database){
+    System.out.println("String to search: ");
+    String searchPattern = vstup.nextLine().trim().toLowerCase();
+    ArrayList<String> searchList = new ArrayList<>();
+    Integer counter = 0;
+    Pattern p = Pattern.compile(".+"+searchPattern+".+"); //regexp
+    StringBuilder builder = new StringBuilder();
+
+    for (String s : database) {
+      Matcher m = p.matcher(s.toLowerCase());
+      counter++;
+      if (m.matches()) {
+          builder.append(counter.toString()).append(". ").append(s).toString();
+        searchList.add(builder.toString());
+        builder.setLength(0);
+      }
+    }
+    if (searchList.size()==0){
+      System.out.println("No records found!");
+    }else {
+      System.out.println("Found " + searchList.size() + " records:\n");
+      for (String found : searchList){
+        System.out.println(found);
+      }
+    }
+    return database;
   }
 }
 //
