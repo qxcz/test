@@ -7,56 +7,49 @@ import java.util.Scanner;
 
 public class Menu {
 
-    public void showMenu(ArrayList<String> database) throws IOException {
+  public void showMenu(ArrayList<String> database) throws IOException {
 
-        DB newDB = new DB();
-        Property myproperty = new Property();
-        String currentDB = myproperty.getProp("name");
+    DB newDB = new DB();
+    Property myproperty = new Property();
+    Scanner vstup = new Scanner(System.in);
+    String currentDB = myproperty.getProp("name");
 
-        System.out.println("\nCurrent DB: " + currentDB + " (" + myproperty.getProp("recordCount") + " records)");
-        System.out.println("1 - Create new DB.");
-        System.out.println("2 - Load new DB.");
-        System.out.println("3 - Add record.");
-        System.out.println("4 - Delete record.");
-        System.out.println("5 - Search.");
-        System.out.println("6 - List all records.");
-        System.out.println("D - Delete DB.");
-        System.out.println("Q - Quit.");
+    System.out.println("\nActive DB: " + currentDB + " (" + myproperty.getProp("recordCount") + " records)");
 
-        Scanner vstup = new Scanner(System.in);
-        String k = vstup.nextLine();
+    String k = vstup.nextLine().trim();
 
-        switch (k) {
-            case "1":
-                showMenu(newDB.loadDirect(newDB.createDB()));
-                break;
-            case "2":
-                newDB.saveDB(database);
-                showMenu(newDB.loadDB());
-                break;
-            case "3":
-                showMenu(newDB.addRecord(database));
-                break;
-            case "4":
-                showMenu(newDB.deleteRecord(database));
-                break;
-            case "5":
-                break;
-            case "6":
-                showMenu(newDB.listDB(database));
-                break;
-            case "d":
-                break;
-            case "q":
-                newDB.saveDB(database);
-                System.exit(0);
-            default:
-                System.out.println("\nUnsupported option:");
-                showMenu(database);
-                break;
-        }
-
+    switch (k) {
+      case "create":
+        showMenu(newDB.loadDirect(newDB.createDB()));
+        break;
+      case "load":
+        newDB.saveDB(database);
+        showMenu(newDB.loadDB());
+        break;
+      case "add":
+        showMenu(newDB.addRecord(database));
+        break;
+      case "delrecord":
+        showMenu(newDB.deleteRecord(database));
+        break;
+      case "search":
+        break;
+      case "list":
+        showMenu(newDB.listDB(database));
+        break;
+      case "deldb":
+        break;
+      case "q":
+        newDB.saveDB(database);
+        System.exit(0);
+      default:
+        System.out.println("Unknown command! Following commands are yet adapted:");
+        System.out.println("create - create new DB | load - load existing DB | deldb - delete existing DB | list - list all records | add - add new record | delrecord - delete record | search - search DB | q - quit");
+        showMenu(database);
+        break;
     }
+
+  }
 
 
 }
