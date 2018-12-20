@@ -340,7 +340,7 @@ public class DB {
     String searchPattern = vstup.nextLine().trim().toLowerCase();
     ArrayList<String> searchList = new ArrayList<>();
     Integer counter = 0;
-    Pattern p = Pattern.compile(".+"+searchPattern+".+"); //regexp
+    Pattern p = Pattern.compile(".*"+searchPattern+".*"); //regexp
     StringBuilder builder = new StringBuilder();
 
     for (String s : database) {
