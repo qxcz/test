@@ -9,14 +9,6 @@ public class Constants {
     return defaultParentPath;
   }
 
-  public String getDefaultDBname() {
-    return defaultDBname;
-  }
-
-  public Path getDefaultDBpath() {
-    return defaultDBpath;
-  }
-
   public Path getDefaultConfig() {
     return defaultConfig;
   }
@@ -25,10 +17,21 @@ public class Constants {
     return header;
   }
 
+  public void setHeader(String header) {
+    this.header = header;
+  }
+
+  public Integer getHeaderCount() {
+    return headerCount;
+  }
+
+  public void setHeaderCount(Integer headerCount) {
+    this.headerCount = headerCount;
+  }
+
   private final Path defaultParentPath = Paths.get("c:\\DEV\\Test\\");
-  private final String defaultDBname = "default.dbf";
-  private final Path defaultDBpath = Paths.get("c:\\DEV\\Test\\default.dbf");
   private final Path defaultConfig = Paths.get("c:\\DEV\\Test\\config.cfg");
-  private final String header = "priezvisko;meno;telefon1;telefon2;email";
+  private String header;
+  private Integer headerCount;
 
 }
