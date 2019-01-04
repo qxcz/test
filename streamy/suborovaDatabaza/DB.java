@@ -344,9 +344,7 @@ public class DB {
             }
         }
         database.add(builder.toString());
-
         Integer newRecordcount = Integer.parseInt(myProperty.getProp("recordCount")) + 1;
-
         myProperty.setCount(newRecordcount);
         return database;
 
