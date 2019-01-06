@@ -132,7 +132,7 @@ public class DB {
 
     public Path setPath() {
         System.out.println("Set valid path: ");
-        Path newPath = Paths.get(vstup.nextLine());
+        Path newPath = Paths.get(vstup.nextLine().trim());
         if (Files.isDirectory(newPath)) {
             return newPath;
         } else {
@@ -154,6 +154,8 @@ public class DB {
                 break;
             case "":
                 break;
+            case "q":
+                return null;
             default:
                 System.out.println("Unknown option!");
                 loadDB();
@@ -168,7 +170,7 @@ public class DB {
         File folder = new File(defaultParentPath.toString());
         ArrayList<String> dbList = new ArrayList<>();
         dbList.clear();
-      //  Menu menu = new Menu();
+        //  Menu menu = new Menu();
 
         for (File s : folder.listFiles()) {
 
@@ -190,29 +192,12 @@ public class DB {
 
             checkDBFile(newDBPath);
 
-            ArrayList<String> database = new ArrayList<String>();
-
-            try {
-                reader = new BufferedReader((new FileReader(newDBPath.toString())));
-                int lines = 0;
-                while ((record = reader.readLine()) != null) {
-                    lines++;
-                    if (lines > 3) {
-                        database.add(record);
-                    }
-                }
-                Integer recordCount = lines - 3;
-                myProperty.setDbName(k);
-                myProperty.setDbRecordCount(recordCount);
-                myProperty.setDbPath(defaultParentPath.toString());
-                myProperty.setDbColumnCount(getHeader(newDBPath));
-                myProperty.saveProperty();
-
-            } finally {
-                if (reader != null) {
-                    reader.close();
-                }
-            }
+            ArrayList<String> database = loadDirect(newDBPath);
+            myProperty.setDbName(k);
+            myProperty.setDbRecordCount(database.size());
+            myProperty.setDbPath(defaultParentPath.toString());
+            myProperty.setDbColumnCount(getHeader(newDBPath));
+            myProperty.saveProperty();
 
             return database;
         }
@@ -327,7 +312,7 @@ public class DB {
         }
     }
 
-    public ArrayList<String> addRecord(ArrayList<String> database) {
+    public ArrayList<String> addRecord(ArrayList<String> database) throws IOException {
 
         String k;
         String header = myConstanst.getHeader();
@@ -346,6 +331,7 @@ public class DB {
         database.add(builder.toString());
         Integer newRecordcount = Integer.parseInt(myProperty.getProp("recordCount")) + 1;
         myProperty.setCount(newRecordcount);
+        saveDB(database);
         return database;
 
     }
@@ -355,28 +341,32 @@ public class DB {
         System.out.println(myConstanst.getHeader().replaceAll(";", " | "));
 
         for (int i = 0; i < database.size(); i++) {
-            String record = database.get(i).replaceAll(";", ",\t");
+            String record = database.get(i).replaceAll(";", ", ");
             System.out.println(i + 1 + ". " + record);
         }
         return database;
     }
 
+
     public void saveDB(ArrayList<String> database) throws IOException {
 
+        ArrayList<String> database2;
+        database2 = (ArrayList<String>) database.clone();
 
         String name = myProperty.getProp("name");
         String recordCount = myProperty.getProp("recordCount");
         String dbPath = myProperty.getProp("path");
         String header = myConstanst.getHeader();
-        StringBuilder builder = new StringBuilder();
 
+        StringBuilder builder = new StringBuilder();
         builder.append(dbPath).append("\\").append(name);
+
         Path p = Paths.get(builder.toString());
         Files.deleteIfExists(p);
-        database.add(0, name);
-        database.add(1, recordCount);
-        database.add(2, header);
-        Files.write(p, database, Charset.forName("UTF-8"), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+        database2.add(0, name);
+        database2.add(1, recordCount);
+        database2.add(2, header);
+        Files.write(p, database2, Charset.forName("UTF-8"), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
         System.out.println("Saving! " + p);
 
     }
@@ -415,10 +405,61 @@ public class DB {
         } else {
             System.out.println("\nFound " + searchList.size() + " records:");
             for (String found : searchList) {
-                System.out.println(found);
+                System.out.println(found.replaceAll(";", ", "));
             }
         }
         return database;
+    }
+
+    public ArrayList<String> editRecord(ArrayList<String> database) {
+
+        System.out.println("Enter number of record to edit: ");
+        String intToEdit = vstup.nextLine();
+        if (intToEdit.equals("q")) {
+            return database;
+        }
+        try {
+            Integer recordToEdit = Integer.parseInt(intToEdit);
+
+            if (recordToEdit > database.size() || recordToEdit <= 0) {
+                System.out.println("Error: Record out of range!");
+                editRecord(database);
+            } else {
+                StringBuilder builder = new StringBuilder();
+                String header = myConstanst.getHeader();
+                String[] headerData = header.split(";");
+                String record = database.get(recordToEdit - 1);
+                String[] recordData = record.split(";");
+
+                for (int i = 0; i < recordData.length; i++) {
+                    System.out.print("\n" + headerData[i] + " (" + recordData[i] + "): ");
+                    String in = vstup.nextLine();
+
+                    if (in.equals("")) {
+                        if (i == 0) {
+                            builder.append(recordData[i]);
+                        } else {
+                            builder.append(";").append(recordData[i]);
+                        }
+                    } else {
+                        if (i == 0) {
+                            builder.append(in);
+                        } else {
+                            builder.append(";").append(in);
+                        }
+
+                    }
+                }
+                database.remove(recordToEdit - 1);
+                database.add(recordToEdit - 1, builder.toString());
+
+            }
+            return database;
+        } catch (NumberFormatException e) {
+            System.out.println("Error: incorrect value!");
+            editRecord(database);
+        }
+        return null;
     }
 }
 

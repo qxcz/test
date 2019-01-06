@@ -1,7 +1,6 @@
 package kolekcie;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Uloha2 {
 
@@ -24,6 +23,21 @@ public class Uloha2 {
 
 
     Map<Integer,Osoba> map = new HashMap<>();
+    map.put(1,osoba1);
+    map.put(2,osoba2);
+    map.put(3,osoba3);
+
+
+    System.out.println(map.get(1).getMeno());
+    System.out.println(map);
+
+    System.out.println(map.containsValue(osoba1));
+
+    List<Osoba> list = new ArrayList<>();
+
+
+    for (int i:map.keySet()){ list.add(map.get(i)); }
+    System.out.println(list);
 
   }
 
